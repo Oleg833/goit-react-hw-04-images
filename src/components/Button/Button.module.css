@@ -1,0 +1,36 @@
+.btnBox {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  color: #212121;
+  background-color: burlywood;
+  border: transparent solid 1px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.88;
+  letter-spacing: 0.06em;
+  text-align: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  background-color: blueviolet;
+}
+
+.btn:focus {
+  transform: scale(1.2);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  background-color: bisque;
+}
