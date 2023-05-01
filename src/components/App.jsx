@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { animateScroll } from 'react-scroll';
 import getImages from './services/image-service';
 import Searchbar from './Searchbar/Searchbar';
@@ -8,116 +8,103 @@ import Loader from './Loader/Loader';
 import Text from './Text/Text';
 import Modal from './Modal/Modal';
 
-export class App extends Component {
-  state = {
-    query: '',
-    images: [],
-    page: 1,
-    per_page: 12,
-    isLoading: false,
-    showLoadMoreBtn: false,
-    isEmpty: false,
-    error: null,
-    showModal: false,
-    largeImageUrl: '',
-    alt: '',
-    id: null,
+const App = () => {
+  const [query, setQuery] = useState('');
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showLoadMoreBtn, setShowLoadMoreBtn] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [largeImageUrl, setLargeImageUrl] = useState('');
+  const [alt, setAlt] = useState('');
+
+  const per_page = 12;
+
+  useEffect(() => {
+    console.log('query=', query);
+    if (!query) {
+      return;
+    }
+    setIsLoading(true);
+    getImages(query, page)
+      .then(({ hits, totalHits }) => {
+        if (!hits.length) {
+          setIsEmpty(true);
+          return;
+        }
+        // console.log(hits);
+        setImages(prevImages => [...prevImages, ...hits]);
+
+        setShowLoadMoreBtn(page < Math.ceil(totalHits / per_page));
+        setError(null);
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    // return () => {
+    //   second
+    // }
+  }, [query, page]);
+
+  const onSubmit = query => {
+    setQuery(query);
+    setImages([]);
+    setPage(1);
+    setIsEmpty(false);
+    setError('');
+    setShowLoadMoreBtn(false);
   };
 
-  componentDidUpdate(props, prevState) {
-    // console.log('start DidUpdate');
-    // console.log(this);
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      this.setState({ isLoading: true });
-      getImages(this.state.query, this.state.page)
-        .then(({ hits, totalHits }) => {
-          if (!hits.length) {
-            this.setState({ isEmpty: true });
-            return;
-          }
-          // console.log(hits);
-          this.setState(prevState => ({
-            images: [...prevState.images, ...hits],
-            showLoadMoreBtn:
-              prevState.page < Math.ceil(totalHits / prevState.per_page),
-            error: null,
-          }));
-        })
-        .catch(err => {
-          this.setState({ error: err.message });
-        })
-        .finally(() => {
-          this.setState({ isLoading: false });
-        });
-    }
-  }
-  onSubmit = query => {
-    this.setState({
-      query,
-      images: [],
-      page: 1,
-      isEmpty: false,
-      error: '',
-      showLoadMoreBtn: false,
-    });
+  const loadMore = e => {
+    setPage(prevPage => prevPage + 1);
+    scrollOnMoreButton();
   };
-  loadMore = e => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-    this.scrollOnMoreButton();
-  };
-  scrollOnMoreButton = () => {
+  const scrollOnMoreButton = () => {
     animateScroll.scrollToBottom({
       duration: 1000,
       delay: 10,
       smooth: 'linear',
     });
   };
-  openModal = (largeImageUrl, alt) => {
-    this.setState({
-      showModal: true,
-      largeImageUrl: largeImageUrl,
-      alt,
-    });
+  const openModal = (largeImageUrl, alt) => {
+    setShowModal(true);
+    setLargeImageUrl(largeImageUrl);
+    setAlt(alt);
   };
-  closeModal = () => {
-    this.setState({
-      showModal: false,
-      largeImageUrl: '',
-    });
+  const closeModal = () => {
+    setShowModal(false);
+    setLargeImageUrl('');
   };
 
-  render() {
-    return (
-      <>
-        <Searchbar onSubmit={this.onSubmit} />
+  return (
+    <>
+      <Searchbar onSubmit={onSubmit} />
 
-        <ImageGallery images={this.state.images} openModal={this.openModal} />
+      <ImageGallery images={images} openModal={openModal} />
 
-        {this.state.showLoadMoreBtn && <Button loadMore={this.loadMore} />}
+      {showLoadMoreBtn && <Button loadMore={loadMore} />}
 
-        {this.state.isLoading && <Loader />}
+      {isLoading && <Loader />}
 
-        {this.state.isEmpty && (
-          <Text text="Sorry. There are no images ... 😭" />
-        )}
+      {isEmpty && <Text text="Sorry. There are no images ... 😭" />}
 
-        {this.state.error && <Text text={this.state.error} />}
+      {error && <Text text={error} />}
 
-        {!this.state.showLoadMoreBtn && this.state.images.length > 0 && (
-          <Text text="No more images to load... 😭" />
-        )}
+      {!showLoadMoreBtn && images.length > 0 && (
+        <Text text="No more images to load... 😭" />
+      )}
 
-        {this.state.showModal && (
-          <Modal
-            largeImageUrl={this.state.largeImageUrl}
-            alt={this.state.alt}
-            onClose={this.closeModal}
-          />
-        )}
-      </>
-    );
-  }
-}
+      {showModal && (
+        <Modal largeImageUrl={largeImageUrl} alt={alt} onClose={closeModal} />
+      )}
+    </>
+  );
+};
+
+export default App;
