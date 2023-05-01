@@ -23,7 +23,6 @@ const App = () => {
   const per_page = 12;
 
   useEffect(() => {
-    console.log('query=', query);
     if (!query) {
       return;
     }

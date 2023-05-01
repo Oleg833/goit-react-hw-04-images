@@ -1,48 +1,45 @@
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
-import { Component } from 'react';
+import { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 
-class Searchbar extends Component {
-  state = {
-    query: '',
+const Searchbar = ({ onSubmit }) => {
+  const [query, setQuery] = useState('');
+
+  const handleInput = event => {
+    setQuery(event.target.value.toLowerCase());
   };
-  handleInput = event => {
-    this.setState({ query: event.target.value.toLowerCase() });
-  };
-  handleOnSubmit = event => {
+  const handleOnSubmit = event => {
     event.preventDefault();
-    if (!this.state.query) {
+    // console.log('query =', query);
+    if (!query.trim()) {
       alert('Please enter a query');
       return;
     }
-    // console.log(this);
-    this.props.onSubmit(this.state.query);
-    this.setState({ query: '' });
+    onSubmit(query.trim());
+    setQuery('');
   };
-  render() {
-    return (
-      <header className={css.searchbar}>
-        <form onSubmit={this.handleOnSubmit} className={css.form}>
-          <button type="submit" className={css.formBtn}>
-            <FiSearch size={30} stroke="#0f1a5d" />
-          </button>
+  return (
+    <header className={css.searchbar}>
+      <form onSubmit={handleOnSubmit} className={css.form}>
+        <button type="submit" className={css.formBtn}>
+          <FiSearch size={30} stroke="#0f1a5d" />
+        </button>
 
-          <input
-            className={css.formInput}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            name="query"
-            value={this.state.query}
-            onChange={this.handleInput}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+        <input
+          className={css.formInput}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          name="query"
+          value={query}
+          onChange={handleInput}
+        />
+      </form>
+    </header>
+  );
+};
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func,
