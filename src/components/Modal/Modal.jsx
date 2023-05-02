@@ -10,7 +10,7 @@ const Modal = ({ largeImageUrl, alt, onClose }) => {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      console.log('unMount');
+      // console.log('unMount');
       window.removeEventListener('keydown', handleKeyDown);
     };
   });
