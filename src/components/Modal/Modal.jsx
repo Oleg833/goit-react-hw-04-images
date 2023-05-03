@@ -18,7 +18,7 @@ const Modal = ({ largeImageUrl, alt, onClose }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  });
+  }, [onClose]);
 
   const handleBackDropClick = evt => {
     if (evt.currentTarget === evt.target) {
