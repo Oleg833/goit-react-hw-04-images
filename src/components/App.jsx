@@ -35,7 +35,6 @@ const App = () => {
         setImages(prevImages => [...prevImages, ...hits]);
 
         setShowLoadMoreBtn(page < Math.ceil(totalHits / per_page));
-        setError(null);
       })
       .catch(err => {
         setError(err.message);
@@ -50,7 +49,7 @@ const App = () => {
     setImages([]);
     setPage(1);
     setIsEmpty(false);
-    setError('');
+    setError(null);
     setShowLoadMoreBtn(false);
   };
 
