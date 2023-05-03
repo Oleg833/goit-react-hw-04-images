@@ -19,7 +19,6 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [largeImageUrl, setLargeImageUrl] = useState('');
   const [alt, setAlt] = useState('');
-
   const per_page = 12;
 
   useEffect(() => {
@@ -33,7 +32,6 @@ const App = () => {
           setIsEmpty(true);
           return;
         }
-        // console.log(hits);
         setImages(prevImages => [...prevImages, ...hits]);
 
         setShowLoadMoreBtn(page < Math.ceil(totalHits / per_page));
@@ -45,10 +43,6 @@ const App = () => {
       .finally(() => {
         setIsLoading(false);
       });
-
-    // return () => {
-    //   second
-    // }
   }, [query, page]);
 
   const onSubmit = query => {

@@ -11,7 +11,7 @@ const Searchbar = ({ onSubmit }) => {
   };
   const handleOnSubmit = event => {
     event.preventDefault();
-    // console.log('query =', query);
+
     if (!query.trim()) {
       alert('Please enter a query');
       return;
