@@ -1,10 +1,10 @@
-import css from './Loader.module.css';
 import { SpinnerRound } from 'spinners-react';
+import { Loading } from './Loader.styled';
 
 const Loader = () => (
-  <div className={css.box}>
+  <Loading>
     <SpinnerRound size="100%" />
-  </div>
+  </Loading>
 );
 
 export default Loader;
